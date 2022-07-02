@@ -2,6 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 import time
+import requests
+from bs4 import BeautifulSoup
 
 class Guvi:
     driver = webdriver.Firefox()
@@ -26,6 +28,18 @@ class Guvi:
         loginBtn = self.driver.find_element(by=By.XPATH, value="//button[@type='submit']")
         loginBtn.click()
         time.sleep(2)
+
+    # method to get data from left panel using BeautifulSoup
+    def getLhsData(self):
+        url=self.driver.current_url
+        data=requests.get(url)
+        soup=BeautifulSoup(data.content,'lxml')
+
+        details=[]
+        for data in self.soup.findAll('div', class_='ml-4'):
+            details.append(data.text)
+        return details
+
 
     # method to create a query in zen portal
     def createQuery(self, queryTitle, queryDescription):
